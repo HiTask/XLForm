@@ -37,6 +37,7 @@ NSString *const kSelectorActionSheetDisabled = @"selectorActionSheetDisabled";
 NSString *const kSelectorLeftRightDisabled = @"selectorLeftRightDisabled";
 NSString *const kSelectorPickerView = @"selectorPickerView";
 NSString *const kSelectorPickerViewInline = @"selectorPickerViewInline";
+NSString *const kSelectorPickerViewInlineMulti = @"selectorPickerViewInlineMulti";
 NSString *const kMultipleSelector = @"multipleSelector";
 NSString *const kMultipleSelectorPopover = @"multipleSelectorPopover";
 NSString *const kDynamicSelectors = @"dynamicSelectors";
@@ -236,9 +237,16 @@ NSString *const kPickerView = @"pickerView";
     
     section = [XLFormSectionDescriptor formSectionWithTitle:@"Inline Selectors"];
     [form addFormSection:section];
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:kMultipleSelector rowType:XLFormRowDescriptorTypeSelectorPickerViewInline title:@"Inline Picker View"];
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:kSelectorPickerViewInline rowType:XLFormRowDescriptorTypeSelectorPickerViewInline title:@"Inline Picker View"];
     row.selectorOptions = @[@"Option 1", @"Option 2", @"Option 3", @"Option 4", @"Option 5", @"Option 6"];
     row.value = @"Option 6";
+    [section addFormRow:row];
+	
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:kSelectorPickerViewInlineMulti rowType:XLFormRowDescriptorTypeSelectorPickerViewInline title:@"Inline Multi Picker View"];
+    row.selectorOptions = @[@[@"Option 1", @"Option 2", @"Option 3", @"Option 4", @"Option 5", @"Option 6"],@[@"Option A",@"Option B",@"Option C"]];
+    row.value = @[[XLFormOptionsObject formOptionsObjectWithValue:@(1) displayText:@"Option 2"],
+				  [XLFormOptionsObject formOptionsObjectWithValue:@(1) displayText:@"Option B"]];
+ // @[@"Option 2",@"Option B"];
     [section addFormRow:row];
     
     // --------- MultipleSelector

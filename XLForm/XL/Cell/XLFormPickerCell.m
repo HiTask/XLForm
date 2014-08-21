@@ -68,7 +68,15 @@
 -(void)update
 {
     [super update];
-    [self.pickerView selectRow:[self selectedIndex] inComponent:0 animated:NO];
+	if	(self.inlineRowDescriptor && [[self.inlineRowDescriptor.selectorOptions objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+		int c=0;
+		for (NSArray *a in self.inlineRowDescriptor.selectorOptions) {
+			[self.pickerView selectRow:[self selectedIndexInComponent:c] inComponent:c animated:NO];
+			 c++;
+		}
+	} else {
+		[self.pickerView selectRow:[self selectedIndex] inComponent:0 animated:NO];
+	}
     [self.pickerView reloadAllComponents];
     
 }
@@ -83,6 +91,9 @@
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
     if (self.inlineRowDescriptor){
+		if	([[self.inlineRowDescriptor.selectorOptions objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+			return [[self.inlineRowDescriptor.selectorOptions objectAtIndex:component] objectAtIndex:row];
+		}
         return [[self.inlineRowDescriptor.selectorOptions objectAtIndex:row] displayText];
     }
     return [[self.rowDescriptor.selectorOptions objectAtIndex:row] displayText];
@@ -91,8 +102,12 @@
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     if (self.inlineRowDescriptor){
-        self.inlineRowDescriptor.value = [self.inlineRowDescriptor.selectorOptions objectAtIndex:row];
-        [[self.inlineRowDescriptor cellForFormController:self.formViewController] update];
+		if ([[self.inlineRowDescriptor.selectorOptions objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+			self.inlineRowDescriptor.value = [[self.inlineRowDescriptor.selectorOptions objectAtIndex:component] objectAtIndex:row];
+		} else {
+			self.inlineRowDescriptor.value = [self.inlineRowDescriptor.selectorOptions objectAtIndex:row];
+			[[self.inlineRowDescriptor cellForFormController:self.formViewController] update];
+		}
     }
     else{
         [self becomeFirstResponder];
@@ -104,18 +119,27 @@
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
+	if (self.inlineRowDescriptor){
+		if	([[self.inlineRowDescriptor.selectorOptions objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+			return [self.inlineRowDescriptor.selectorOptions count];
+		}
+	}
     return 1;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
     if (self.inlineRowDescriptor){
+		if	([[self.inlineRowDescriptor.selectorOptions objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+			return [[self.inlineRowDescriptor.selectorOptions objectAtIndex:component] count];
+		}
         return self.inlineRowDescriptor.selectorOptions.count;
     }
     return self.rowDescriptor.selectorOptions.count;
 }
 
 #pragma mark - helpers
+
 
 -(NSInteger)selectedIndex
 {
@@ -130,5 +154,20 @@
     return -1;
 }
 
-
+-(NSInteger)selectedIndexInComponent:(int)component
+{
+    XLFormRowDescriptor * formRow = self.inlineRowDescriptor ?: self.rowDescriptor;
+    if (formRow.value){
+		NSArray *selectorOptions=formRow.selectorOptions;
+		if	(self.inlineRowDescriptor && [[self.inlineRowDescriptor.selectorOptions objectAtIndex:0] isKindOfClass:[NSArray class]]) {
+			selectorOptions=[formRow.selectorOptions objectAtIndex:component];
+		}
+        for (id option in selectorOptions){
+            if ([[option valueData] isEqual:[formRow.value valueData]]){
+                return [selectorOptions indexOfObject:option];
+            }
+        }
+    }
+    return -1;
+}
 @end
