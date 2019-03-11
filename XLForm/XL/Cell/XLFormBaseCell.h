@@ -37,6 +37,14 @@
 
 -(XLFormViewController *)formViewController;
 
+@property (nonatomic, nullable) UIColor *nativeTitleColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic, nullable) UIColor *nativeTitleDisabledColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic, nullable) UIColor *nativeDetailColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic, nullable) UIFont *nativeTitleFont UI_APPEARANCE_SELECTOR;
+@property (nonatomic, nullable) UIFont *nativeDetailFont UI_APPEARANCE_SELECTOR;
+
+- (void)updateFormRow;
+
 @end
 
 

@@ -25,12 +25,21 @@
 
 #import "XLFormBaseCell.h"
 
+
 @implementation XLFormBaseCell
+
+@synthesize nativeTitleColor = _nativeTitleColor;
+@synthesize nativeTitleDisabledColor = _nativeTitleDisabledColor;
+@synthesize nativeDetailColor = _nativeDetailColor;
+
+@synthesize nativeTitleFont = _nativeTitleFont;
+@synthesize nativeDetailFont = _nativeDetailFont;
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+		[self setDefaultNativeLabelProperties];
         [self configure];
     }
     return self;
@@ -39,18 +48,33 @@
 - (void)awakeFromNib
 {
     [super awakeFromNib];
+	[self setDefaultNativeLabelProperties];
     [self configure];
+	
+}
+
+- (void)setDefaultNativeLabelProperties
+{
+	_nativeTitleColor = [UIColor blackColor];
+	_nativeTitleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+	_nativeDetailFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 }
 
 - (void)configure
 {
+	_nativeTitleColor = [UIColor grayColor];
 }
 
 - (void)update
 {
-    self.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    self.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    self.textLabel.textColor  = self.rowDescriptor.isDisabled ? [UIColor grayColor] : [UIColor blackColor];
+    self.textLabel.font = self.nativeTitleFont;
+    self.detailTextLabel.font = self.nativeDetailFont;
+	self.detailTextLabel.textColor = self.nativeTitleColor;
+	if (self.rowDescriptor != nil && self.rowDescriptor.isDisabled && self.nativeTitleDisabledColor != nil) {
+		self.textLabel.textColor = self.nativeTitleDisabledColor;
+	} else {
+		self.textLabel.textColor = self.nativeTitleColor;
+	}
 }
 
 -(void)highlight
@@ -71,6 +95,57 @@
         responder = [responder nextResponder];
     }
     return nil;
+}
+
+- (void)setNativeTitleColor:(UIColor *)color UI_APPEARANCE_SELECTOR {
+	_nativeTitleColor = color;
+	[self updateFormRow];
+}
+
+- (UIColor *)nativeTitleColor {
+	return _nativeTitleColor;
+}
+
+- (void)setNativeTitleDisabledColor:(UIColor *)color UI_APPEARANCE_SELECTOR {
+	_nativeTitleDisabledColor = color;
+	[self updateFormRow];
+}
+
+- (UIColor *)nativeTitleDisabledColor {
+	return _nativeTitleDisabledColor;
+}
+
+- (void)setNativeDetailColor:(UIColor *)color UI_APPEARANCE_SELECTOR {
+	_nativeDetailColor = color;
+	[self updateFormRow];
+}
+
+- (UIColor *)nativeDetailColor {
+	return _nativeDetailColor;
+}
+
+- (void)setNativeTitleFont:(UIFont *)font UI_APPEARANCE_SELECTOR {
+	_nativeTitleFont = font;
+	[self updateFormRow];
+}
+
+- (UIFont *)nativeTitleFont {
+	return _nativeTitleFont;
+}
+
+- (void)setNativeDetailFont:(UIFont *)font UI_APPEARANCE_SELECTOR {
+	_nativeDetailFont = font;
+	[self updateFormRow];
+}
+
+- (UIFont *)nativeDetailFont {
+	return _nativeDetailFont;
+}
+
+- (void)updateFormRow {
+	if (self.formViewController != nil && self.rowDescriptor != nil) {
+		[self.formViewController updateFormRow:self.rowDescriptor];
+	}
 }
 
 #pragma mark - Navigation Between Fields
