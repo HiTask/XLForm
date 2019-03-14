@@ -45,6 +45,9 @@
 
 - (void)updateFormRow;
 
+// Sub-classes can override this method to handle color and font changes to customized own elements.
+- (void)updateCellAppearance;
+
 @end
 
 

@@ -67,9 +67,15 @@
 
 - (void)update
 {
-    self.textLabel.font = self.nativeTitleFont;
-    self.detailTextLabel.font = self.nativeDetailFont;
-	self.detailTextLabel.textColor = self.nativeTitleColor;
+	[self updateCellAppearance];
+}
+
+- (void)updateCellAppearance {
+	self.textLabel.font = self.nativeTitleFont;
+	self.detailTextLabel.font = self.nativeDetailFont;
+	
+	self.detailTextLabel.textColor = self.nativeDetailColor;
+	
 	if (self.rowDescriptor != nil && self.rowDescriptor.isDisabled && self.nativeTitleDisabledColor != nil) {
 		self.textLabel.textColor = self.nativeTitleDisabledColor;
 	} else {
@@ -99,7 +105,7 @@
 
 - (void)setNativeTitleColor:(UIColor *)color UI_APPEARANCE_SELECTOR {
 	_nativeTitleColor = color;
-	[self updateFormRow];
+	[self updateCellAppearance];
 }
 
 - (UIColor *)nativeTitleColor {
@@ -108,7 +114,7 @@
 
 - (void)setNativeTitleDisabledColor:(UIColor *)color UI_APPEARANCE_SELECTOR {
 	_nativeTitleDisabledColor = color;
-	[self updateFormRow];
+	[self updateCellAppearance];
 }
 
 - (UIColor *)nativeTitleDisabledColor {
@@ -117,7 +123,7 @@
 
 - (void)setNativeDetailColor:(UIColor *)color UI_APPEARANCE_SELECTOR {
 	_nativeDetailColor = color;
-	[self updateFormRow];
+	[self updateCellAppearance];
 }
 
 - (UIColor *)nativeDetailColor {
@@ -126,7 +132,7 @@
 
 - (void)setNativeTitleFont:(UIFont *)font UI_APPEARANCE_SELECTOR {
 	_nativeTitleFont = font;
-	[self updateFormRow];
+	[self updateCellAppearance];
 }
 
 - (UIFont *)nativeTitleFont {
@@ -135,7 +141,7 @@
 
 - (void)setNativeDetailFont:(UIFont *)font UI_APPEARANCE_SELECTOR {
 	_nativeDetailFont = font;
-	[self updateFormRow];
+	[self updateCellAppearance];
 }
 
 - (UIFont *)nativeDetailFont {
