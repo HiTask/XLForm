@@ -70,24 +70,9 @@ NSString *const XLFormTextViewMaxNumberOfCharacters = @"textViewMaxNumberOfChara
 
 #pragma mark - Properties
 
--(UILabel *)textLabel
-{
-    if (_textLabel) return _textLabel;
-    _textLabel = [UILabel autolayoutView];
-    [_textLabel setContentHuggingPriority:500 forAxis:UILayoutConstraintAxisHorizontal];
-    return _textLabel;
-}
-
 -(UILabel *)label
 {
     return self.textLabel;
-}
-
--(XLFormTextView *)textView
-{
-    if (_textView) return _textView;
-    _textView = [XLFormTextView autolayoutView];
-    return _textView;
 }
 
 #pragma mark - XLFormDescriptorCell
@@ -96,8 +81,15 @@ NSString *const XLFormTextViewMaxNumberOfCharacters = @"textViewMaxNumberOfChara
 {
     [super configure];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [self.contentView addSubview:self.textLabel];
-    [self.contentView addSubview:self.textView];
+    UILabel *textLabel = [UILabel autolayoutView];
+    [textLabel setContentHuggingPriority:500 forAxis:UILayoutConstraintAxisHorizontal];
+    [self.contentView addSubview:textLabel];
+    _textLabel = textLabel;
+    
+    XLFormTextView *textView = [XLFormTextView autolayoutView];
+    [self.contentView addSubview:textView];
+    _textView = textView;
+    
     [self.textLabel addObserver:self forKeyPath:@"text" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:0];
     NSDictionary * views = @{@"label": self.textLabel, @"textView": self.textView};
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[label]" options:0 metrics:0 views:views]];
@@ -115,8 +107,34 @@ NSString *const XLFormTextViewMaxNumberOfCharacters = @"textViewMaxNumberOfChara
     self.textView.keyboardType = UIKeyboardTypeDefault;
     self.textView.text = self.rowDescriptor.value;
     [self.textView setEditable:!self.rowDescriptor.isDisabled];
-    self.textView.textColor  = self.rowDescriptor.isDisabled ? [UIColor grayColor] : [UIColor blackColor];
     self.textLabel.text = ((self.rowDescriptor.required && self.rowDescriptor.title && self.rowDescriptor.sectionDescriptor.formDescriptor.addAsteriskToRequiredRowsTitle) ? [NSString stringWithFormat:@"%@*", self.rowDescriptor.title]: self.rowDescriptor.title);
+    self.textView.backgroundColor = self.textLabel.backgroundColor;
+    
+    UIColor * textColor = nil;
+    UIColor * disabledTextColor = nil;
+    
+    if (@available(iOS 13.0, *)) {
+        textColor = [self traitCollection].userInterfaceStyle == UIUserInterfaceStyleDark ? [UIColor systemGrayColor] : [UIColor blackColor];
+        disabledTextColor = [UIColor systemGray3Color];
+    }
+    
+    else if (@available(iOS 12.0, *)) {
+        textColor = [self traitCollection].userInterfaceStyle == UIUserInterfaceStyleDark ? [UIColor lightTextColor] : [UIColor darkTextColor];
+        disabledTextColor = [UIColor systemGrayColor];
+    }
+
+    else {
+        textColor = [UIColor blackColor];
+        disabledTextColor = [UIColor grayColor];
+    }
+    
+    
+    if (self.rowDescriptor.isDisabled) {
+        self.textView.textColor = disabledTextColor;
+    }
+    else {
+        self.textView.textColor = textColor;
+    }
 }
 
 +(CGFloat)formDescriptorCellHeightForRowDescriptor:(XLFormRowDescriptor *)rowDescriptor
@@ -160,7 +178,7 @@ NSString *const XLFormTextViewMaxNumberOfCharacters = @"textViewMaxNumberOfChara
     }
     else{
         [_dynamicCustomConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[label]-[textView]-|" options:0 metrics:0 views:views]];
-        if (self.textViewLengthPercentage) {
+        if (self.textViewLengthPercentage != nil) {
             [_dynamicCustomConstraints addObject:[NSLayoutConstraint constraintWithItem:_textView
                                                                               attribute:NSLayoutAttributeWidth
                                                                               relatedBy:NSLayoutRelationEqual
@@ -207,7 +225,7 @@ NSString *const XLFormTextViewMaxNumberOfCharacters = @"textViewMaxNumberOfChara
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if (self.textViewMaxNumberOfCharacters) {
+    if (self.textViewMaxNumberOfCharacters != nil) {
         // Check maximum length requirement
         NSString *newText = [textView.text stringByReplacingCharactersInRange:range withString:text];
         if (newText.length > self.textViewMaxNumberOfCharacters.integerValue) {

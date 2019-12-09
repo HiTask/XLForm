@@ -6,7 +6,9 @@ By [XMARTLABS](http://xmartlabs.com).
 [![Build Status](https://travis-ci.org/xmartlabs/XLForm.svg?branch=master)](https://travis-ci.org/xmartlabs/XLForm)
 <a href="https://cocoapods.org/pods/XLForm"><img src="https://img.shields.io/cocoapods/v/XLForm.svg" alt="CocoaPods compatible" /></a>
 
-**If you are working in Swift then you should have a look at [Eureka], a complete re-design of XLForm in Swift.** *Do not panic, we will continue maintaining and improving XLForm, obj-c rocks!!*
+**If you are working in Swift then you should have a look at [Eureka], a complete re-design of XLForm in Swift and with more features.**
+
+We are not implementing any new features for XLForm anymore. However, if a critical issue arises we will fix it.
 
 Purpose
 --------------
@@ -1126,7 +1128,7 @@ Installation
 ## CocoaPods
 
 1. Add the following line in the project's Podfile file:
-`pod 'XLForm', '~> 4.0'`.
+`pod 'XLForm', '~> 4.1'`.
 2. Run the command `pod install` from the Podfile folder directory.
 
 XLForm **has no** dependencies over other pods.
@@ -1156,7 +1158,7 @@ For further details on how to create and configure the bridging header file visi
 In your `Cartfile` add:
 
 ```
-github "xmartlabs/XLForm" ~> 4.0
+github "xmartlabs/XLForm" ~> 4.1
 ```
 
 ## Using git submodules

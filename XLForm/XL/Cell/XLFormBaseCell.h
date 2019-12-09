@@ -53,8 +53,8 @@
 
 @protocol XLFormReturnKeyProtocol
 
-@property UIReturnKeyType returnKeyType;
-@property UIReturnKeyType nextReturnKeyType;
+@property (nonatomic, assign) UIReturnKeyType returnKeyType;
+@property (nonatomic, assign) UIReturnKeyType nextReturnKeyType;
 
 @end
 
