@@ -174,8 +174,16 @@ NSString *const XLFormTextFieldMaxNumberOfCharacters = @"textFieldMaxNumberOfCha
 	[super updateCellAppearance];
 	
 	self.textField.textColor = self.rowDescriptor.isDisabled ? self.nativeTitleDisabledColor : self.nativeTitleColor;
+	self.textField.adjustsFontForContentSizeCategory = YES;
+	UIFont *font;
+	if (@available(iOS 11.0, *)) {
+		font = [[UIFontMetrics metricsForTextStyle:UIFontTextStyleTitle2] scaledFontForFont:self.nativeTitleFont];
+	} else {
+		font = self.nativeTitleFont;
+	}
+
 	if (self.nativeTitleFont != nil) {
-		self.textField.font = self.nativeTitleFont;
+		self.textField.font = font;
 	} else {
 		self.textField.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 	}

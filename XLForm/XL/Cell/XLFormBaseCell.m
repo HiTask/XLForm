@@ -71,8 +71,20 @@
 }
 
 - (void)updateCellAppearance {
-	self.textLabel.font = self.nativeTitleFont;
-	self.detailTextLabel.font = self.nativeDetailFont;
+	UIFont *titleFont;
+	UIFont *detailFont;
+	if (@available(iOS 11.0, *)) {
+		titleFont = [[UIFontMetrics metricsForTextStyle:UIFontTextStyleTitle2] scaledFontForFont:self.nativeTitleFont];
+		detailFont = [[UIFontMetrics metricsForTextStyle:UIFontTextStyleTitle3] scaledFontForFont:self.nativeDetailFont];
+	} else {
+		titleFont = self.nativeTitleFont;
+		detailFont = self.nativeDetailFont;
+	}
+	self.textLabel.font = titleFont;
+	self.textLabel.adjustsFontForContentSizeCategory = YES;
+	
+	self.detailTextLabel.font = detailFont;
+	self.detailTextLabel.adjustsFontForContentSizeCategory = YES;
 	
 	self.detailTextLabel.textColor = self.nativeDetailColor;
 	
